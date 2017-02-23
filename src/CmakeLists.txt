@@ -1,16 +1,18 @@
 cmake_minimum_required(VERSION 2.6)
-#Cambia cierta biblioteca con que se escribe y lee el dll
-#es necesario para unirlo al objeto de cuda
-if(MSVC)
-        set(CMAKE_CXX_FLAGS_DEBUG "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
-        set(CMAKE_CXX_FLAGS_MINSIZEREL     "/MT /O1 /Ob1 /D NDEBUG")
-        set(CMAKE_CXX_FLAGS_RELEASE        "/MT /O2 /Ob2 /D NDEBUG")
-        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/MT /Zi /O2 /Ob1 /D NDEBUG")
-endif()
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/..")
+
+##Change the path of output
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/..")
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/..")
-#Inclusion del directorio de las liberias de cudas necesarias al momemento de compilacion
-LINK_DIRECTORIES("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v8.0/lib/x64")
-add_library(cudadll SHARED cudaHandler.cpp binding.cpp hello.obj)
-#Inclusion del directorio de las liberias de cudas necesarias al momemento de compilacion
-TARGET_LINK_LIBRARIES(cudadll cuda cudart)
+
+##load cuda libaries and utilies 
+FIND_PACKAGE(CUDA REQUIRED)
+INCLUDE(FindCUDA)
+
+##compile the cuda sources into objects used by c/c++ compiler
+CUDA_COMPILE(VectorSum_O vectorSum.cu)
+
+##compile the c/c++ source and cuda objects into dll
+add_library(cudadll SHARED cudaHandler.cpp binding.cpp ${VectorSum_O})
+
+##add cuda libraries in the c++ compilation
+TARGET_LINK_LIBRARIES(cudadll  ${CUDA_LIBRARIES})
