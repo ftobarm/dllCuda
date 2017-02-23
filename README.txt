@@ -1,15 +1,10 @@
-Autor: Francisco Tobar
+﻿Autor: Francisco Tobar
 
 ##Las tildes fueron omitidas para evitar problemas de compatibildad##
 Intrucciones de instalcion:
 
 Se debe tener previamente instalado cmake, algun compilador de c++, nodeJs y cudaSDK .
 Este fue probado con Visual Studio 14.
-
-Primero se debe compilar el codigo de cuda en un objeto para esto debemos ejecutar en la carpeta src:
-	nvcc -C hello.cu
-
-De funcionar correctamente se deberia haber generado un objeto con el codigo compilado 
 
 El archivo cuenta con cmake para ser compilado se debe:
 
@@ -21,7 +16,7 @@ se debe ejecutar ** , cmake build ..
 * El directorio raiz es la carpeta cudaDll que contiene el CmakeList.txt
 ** Al momento de ejecutar el cmake se debe comprobar que se escoga la misma arquitectura que la del node instalado, cmake escoge 32bits por defecto, esto se puede hacer mediante la flag -G "visual Studio XX XXXX win 64" para 64 bits.
 2.- Dentro del direcotrio donde se ejecuto el comando anterior se debe ejucutar el comando cmake --build . --config Release
-3.- De salir todo bien se deberia haber generado un carpeta release el directorio raiz el cual contiene el ejecutable.
+3.- De salir todo bien se deberia haber generado un carpeta release el directorio raiz el cual contiene la libreria
 
 Una vez compilado todo es necesario instalar las dependencias de node a traves del comando en la carpeta raiz:
 
@@ -41,13 +36,15 @@ El programa debe ejecutarse mediante el comando:
 
 npm start
 
-De salir bien la consola desde la cual se ejecuto el comando deberia ser visible un mensaje.
+deberia mostrar un serie de numeros que representa la suma de 2 vectores-
 
 Es un programa simple de ejemplo, para probrar la integracion de cuda a traves de c++ y ffi.
 Se recomienda revisar los archivos:
--src/binding.cpp
-src/binding.h
-src/cudaHandler.cpp
-src/cudaHandler.h
+   
+    -src/binding.cpp
+    -src/binding.h
+    -src/cudaHandler.cpp
+    -src/cudaHandler.h
+    -src/vectorSum.cu
 
-para entender el funcionamiento de la libreria funcionamiento.
+para entender el funcionamiento de la libreria.

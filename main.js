@@ -1,6 +1,9 @@
 const electron = require('electron');
 var ffi = require('ffi');
-var ref = require("ref")
+var ref = require("ref");
+var ArrayType = require('ref-array');
+//defincion de la estructura de un arreglo de float
+var floatArray = ArrayType(ref.types.float);
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -62,11 +65,26 @@ app.on('activate', function () {
 // code. You can also put them in separate files and require them here.
 
 // You can also access just functions in the current process by passing a null
+//call the dll and describe the function's signature
 var Handler = ffi.Library("./Release/cudadll", {
    "create_Handler":["pointer",[]],
    "free_Handler": ["void",["pointer"]],
-   "callCuda":["void",["pointer"]],
+   "cudaTest":[floatArray,["pointer"]],
+   "get_len": ["int",["pointer"]]
 });
+//create the object handler
 cudaHandlerObj=Handler.create_Handler();
-Handler.callCuda(cudaHandlerObj);
+//create the vector from cuda
+var aux=Handler.cudaTest(cudaHandlerObj);
+//get the len of the vector
+var n= Handler.get_len(cudaHandlerObj)
+//set the size of the vector
+aux.length=n;
+//copy the data to a local memory and managed by js
+var array = aux.toArray().slice(0, n);
+//print the vector
+array.forEach(function(element) {
+  console.log(" "+element);
+  });
+//destroy the handler
 Handler.free_Handler(cudaHandlerObj)
